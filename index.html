@@ -22,25 +22,24 @@ body {
     align-items: center;
 }
 
-/* Painel principal */
+/* Painel */
 .panel {
     width: 92%;
     max-width: 380px;
-    padding: 25px 18px;
+    padding: 22px 16px;
     border: 1px solid #00ffff;
     border-radius: 10px;
-    background: rgba(0, 20, 20, 0.25);
+    background: rgba(0,20,20,0.25);
     box-shadow:
         0 0 15px rgba(0,255,255,0.4),
         inset 0 0 20px rgba(0,255,255,0.15);
     text-align: center;
 }
 
-/* Título */
 h1 {
     font-size: 18px;
     letter-spacing: 3px;
-    margin-bottom: 18px;
+    margin-bottom: 15px;
     text-shadow: 0 0 10px #00ffff;
 }
 
@@ -48,8 +47,8 @@ h1 {
 .btn {
     display: block;
     width: 100%;
-    padding: 16px;
-    margin: 10px 0;
+    padding: 15px;
+    margin: 8px 0;
     border: 1px solid #00ffff;
     border-radius: 6px;
     text-decoration: none;
@@ -59,29 +58,25 @@ h1 {
     transition: 0.25s;
 }
 
-.btn:active {
-    transform: scale(0.97);
-}
+.btn:active { transform: scale(0.97); }
 
 .btn:hover {
     background: rgba(0,255,255,0.15);
     box-shadow: 0 0 12px #00ffff;
 }
 
-/* Área de mercado */
+/* Mercado */
 .market {
-    margin-top: 18px;
+    margin-top: 15px;
     border-top: 1px solid rgba(0,255,255,0.3);
-    padding-top: 15px;
+    padding-top: 12px;
 }
 
-/* Card de ativo */
 .asset {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin: 8px 0;
+    padding: 8px;
+    margin: 6px 0;
     border: 1px solid rgba(0,255,255,0.3);
     border-radius: 6px;
     box-shadow: inset 0 0 8px rgba(0,255,255,0.1);
@@ -89,7 +84,6 @@ h1 {
 
 .asset-name {
     font-size: 13px;
-    letter-spacing: 1px;
 }
 
 .asset-price {
@@ -97,9 +91,22 @@ h1 {
     text-shadow: 0 0 8px #00ffff;
 }
 
-/* Status */
-.status {
+/* Relógios */
+.clocks {
     margin-top: 12px;
+    border-top: 1px solid rgba(0,255,255,0.3);
+    padding-top: 10px;
+}
+
+.clock {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 0;
+}
+
+.status {
+    margin-top: 10px;
     font-size: 10px;
     opacity: 0.6;
     letter-spacing: 2px;
@@ -111,35 +118,32 @@ h1 {
 <div class="panel">
     <h1>TRADER PANEL</h1>
 
-    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calcel.html">
-        CÁLCULO
-    </a>
-
-    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">
-        PEDIDO
-    </a>
+    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calcel.html">CÁLCULO</a>
+    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">PEDIDO</a>
 
     <div class="market">
-
         <div class="asset">
             <div class="asset-name">USD / BRL</div>
             <div class="asset-price" id="usd">--</div>
         </div>
 
         <div class="asset">
-            <div class="asset-name">OURO (XAU/USD)</div>
+            <div class="asset-name">XAU / USD</div>
             <div class="asset-price" id="gold">--</div>
         </div>
-
     </div>
 
-    <div class="status">
-        MARKET DATA - AUTO UPDATE
+    <div class="clocks">
+        <div class="clock"><span>NEW YORK</span><span id="ny"></span></div>
+        <div class="clock"><span>LONDON</span><span id="ldn"></span></div>
+        <div class="clock"><span>HONG KONG</span><span id="hk"></span></div>
     </div>
+
+    <div class="status">AUTO UPDATE</div>
 </div>
 
 <script>
-// USD/BRL
+// -------- USD/BRL --------
 async function atualizarUSD() {
     try {
         const r = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
@@ -151,29 +155,48 @@ async function atualizarUSD() {
     }
 }
 
-// Ouro (XAU/USD)
+// -------- OURO (via Metals API alternativa estável) --------
+// Usa proxy público para evitar bloqueio CORS
 async function atualizarOuro() {
     try {
-        const r = await fetch("https://api.metals.live/v1/spot/gold");
+        const r = await fetch("https://api.allorigins.win/raw?url=https://api.metals.live/v1/spot");
         const d = await r.json();
+
+        // resposta é um array: [["gold", preço], ...]
+        const gold = d.find(item => item[0] === "gold")[1];
+
         document.getElementById("gold").innerText =
-            "$ " + parseFloat(d.price).toFixed(2);
+            "$ " + parseFloat(gold).toFixed(2);
     } catch {
         document.getElementById("gold").innerText = "Erro";
     }
 }
 
-// Atualizar tudo
-function atualizarDados() {
+// -------- RELÓGIOS --------
+function atualizarRelogios() {
+    const agora = new Date();
+
+    document.getElementById("ny").innerText =
+        agora.toLocaleTimeString("pt-BR", { timeZone: "America/New_York", hour12: false });
+
+    document.getElementById("ldn").innerText =
+        agora.toLocaleTimeString("pt-BR", { timeZone: "Europe/London", hour12: false });
+
+    document.getElementById("hk").innerText =
+        agora.toLocaleTimeString("pt-BR", { timeZone: "Asia/Hong_Kong", hour12: false });
+}
+
+// -------- ATUALIZAÇÕES --------
+function atualizarTudo() {
     atualizarUSD();
     atualizarOuro();
 }
 
-// Primeira carga
-atualizarDados();
+atualizarTudo();
+atualizarRelogios();
 
-// Atualiza a cada 60s
-setInterval(atualizarDados, 60000);
+setInterval(atualizarTudo, 60000);   // preços
+setInterval(atualizarRelogios, 1000); // relógios em tempo real
 </script>
 
 </body>
