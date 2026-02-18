@@ -2,172 +2,179 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Painel HUD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trader Panel</title>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Consolas", "Courier New", monospace;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Consolas, Arial, sans-serif;
+}
 
-    body {
-        background: #000;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        color: #00ffff;
-    }
+body {
+    background: #000;
+    color: #00ffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    /* Grade de fundo estilo HUD */
-    body::before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
-        background-size: 40px 40px;
-        z-index: 0;
-    }
+/* Painel principal */
+.panel {
+    width: 92%;
+    max-width: 380px;
+    padding: 25px 18px;
+    border: 1px solid #00ffff;
+    border-radius: 10px;
+    background: rgba(0, 20, 20, 0.25);
+    box-shadow:
+        0 0 15px rgba(0,255,255,0.4),
+        inset 0 0 20px rgba(0,255,255,0.15);
+    text-align: center;
+}
 
-    /* Linha de varredura */
-    .scan {
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background: rgba(0,255,255,0.5);
-        animation: scan 4s linear infinite;
-        z-index: 1;
-    }
+/* Título */
+h1 {
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+    text-shadow: 0 0 10px #00ffff;
+}
 
-    @keyframes scan {
-        0% { top: 0; }
-        100% { top: 100%; }
-    }
+/* Botões */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin: 10px 0;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #00ffff;
+    letter-spacing: 2px;
+    font-size: 15px;
+    transition: 0.25s;
+}
 
-    /* Container HUD */
-    .hud-box {
-        position: relative;
-        padding: 50px 40px;
-        border: 2px solid #00ffff;
-        box-shadow:
-            0 0 10px #00ffff,
-            inset 0 0 20px rgba(0,255,255,0.2);
-        text-align: center;
-        z-index: 2;
-    }
+.btn:active {
+    transform: scale(0.97);
+}
 
-    /* Cantos estilo HUD */
-    .hud-box::before,
-    .hud-box::after {
-        content: "";
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        border: 2px solid #00ffff;
-    }
+.btn:hover {
+    background: rgba(0,255,255,0.15);
+    box-shadow: 0 0 12px #00ffff;
+}
 
-    .hud-box::before {
-        top: -2px;
-        left: -2px;
-        border-right: none;
-        border-bottom: none;
-    }
+/* Área de mercado */
+.market {
+    margin-top: 18px;
+    border-top: 1px solid rgba(0,255,255,0.3);
+    padding-top: 15px;
+}
 
-    .hud-box::after {
-        bottom: -2px;
-        right: -2px;
-        border-left: none;
-        border-top: none;
-    }
+/* Card de ativo */
+.asset {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid rgba(0,255,255,0.3);
+    border-radius: 6px;
+    box-shadow: inset 0 0 8px rgba(0,255,255,0.1);
+}
 
-    h1 {
-        margin-bottom: 30px;
-        letter-spacing: 4px;
-        text-shadow: 0 0 10px #00ffff;
-    }
+.asset-name {
+    font-size: 13px;
+    letter-spacing: 1px;
+}
 
-    /* Botões HUD */
-    .btn {
-        display: block;
-        width: 260px;
-        margin: 15px auto;
-        padding: 16px;
-        color: #00ffff;
-        text-decoration: none;
-        border: 1px solid #00ffff;
-        position: relative;
-        transition: 0.3s;
-        letter-spacing: 2px;
-    }
+.asset-price {
+    font-size: 16px;
+    text-shadow: 0 0 8px #00ffff;
+}
 
-    .btn:hover {
-        background: rgba(0,255,255,0.15);
-        box-shadow:
-            0 0 10px #00ffff,
-            0 0 25px #00ffff;
-        transform: scale(1.05);
-    }
-
-    /* Linhas internas do botão */
-    .btn::before,
-    .btn::after {
-        content: "";
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        border: 1px solid #00ffff;
-    }
-
-    .btn::before {
-        top: -1px;
-        left: -1px;
-        border-right: none;
-        border-bottom: none;
-    }
-
-    .btn::after {
-        bottom: -1px;
-        right: -1px;
-        border-left: none;
-        border-top: none;
-    }
-
-    /* Texto inferior HUD */
-    .status {
-        margin-top: 25px;
-        font-size: 12px;
-        opacity: 0.7;
-        letter-spacing: 2px;
-    }
-
+/* Status */
+.status {
+    margin-top: 12px;
+    font-size: 10px;
+    opacity: 0.6;
+    letter-spacing: 2px;
+}
 </style>
 </head>
-
 <body>
 
-<div class="scan"></div>
-
-<div class="hud-box">
-    <h1>SYSTEM PANEL</h1>
+<div class="panel">
+    <h1>TRADER PANEL</h1>
 
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calcel.html">
-        ACESSAR CÁLCULO
+        CÁLCULO
     </a>
 
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">
-        ACESSAR PEDIDO
+        PEDIDO
     </a>
 
+    <div class="market">
+
+        <div class="asset">
+            <div class="asset-name">USD / BRL</div>
+            <div class="asset-price" id="usd">--</div>
+        </div>
+
+        <div class="asset">
+            <div class="asset-name">OURO (XAU/USD)</div>
+            <div class="asset-price" id="gold">--</div>
+        </div>
+
+    </div>
+
     <div class="status">
-        STATUS: ONLINE
+        MARKET DATA - AUTO UPDATE
     </div>
 </div>
+
+<script>
+// USD/BRL
+async function atualizarUSD() {
+    try {
+        const r = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
+        const d = await r.json();
+        document.getElementById("usd").innerText =
+            "R$ " + parseFloat(d.USDBRL.bid).toFixed(2);
+    } catch {
+        document.getElementById("usd").innerText = "Erro";
+    }
+}
+
+// Ouro (XAU/USD)
+async function atualizarOuro() {
+    try {
+        const r = await fetch("https://api.metals.live/v1/spot/gold");
+        const d = await r.json();
+        document.getElementById("gold").innerText =
+            "$ " + parseFloat(d.price).toFixed(2);
+    } catch {
+        document.getElementById("gold").innerText = "Erro";
+    }
+}
+
+// Atualizar tudo
+function atualizarDados() {
+    atualizarUSD();
+    atualizarOuro();
+}
+
+// Primeira carga
+atualizarDados();
+
+// Atualiza a cada 60s
+setInterval(atualizarDados, 60000);
+</script>
 
 </body>
 </html>
