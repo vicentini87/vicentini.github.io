@@ -155,22 +155,26 @@ async function atualizarUSD() {
     }
 }
 
-// -------- OURO (via Metals API alternativa estável) --------
-// Usa proxy público para evitar bloqueio CORS
+// -------- OURO XAU/USD --------
 async function atualizarOuro() {
     try {
-        const r = await fetch("https://api.allorigins.win/raw?url=https://api.metals.live/v1/spot");
-        const d = await r.json();
+        const resposta = await fetch(
+            "https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD"
+        );
 
-        // resposta é um array: [["gold", preço], ...]
-        const gold = d.find(item => item[0] === "gold")[1];
+        const dados = await resposta.json();
+
+        // preço do ouro por onça
+        const preco = dados.items[0].xauPrice;
 
         document.getElementById("gold").innerText =
-            "$ " + parseFloat(gold).toFixed(2);
-    } catch {
+            "$ " + parseFloat(preco).toFixed(2);
+
+    } catch (erro) {
         document.getElementById("gold").innerText = "Erro";
     }
 }
+
 
 // -------- RELÓGIOS --------
 function atualizarRelogios() {
@@ -201,3 +205,4 @@ setInterval(atualizarRelogios, 1000); // relógios em tempo real
 
 </body>
 </html>
+
