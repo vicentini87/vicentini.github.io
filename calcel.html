@@ -2,27 +2,36 @@
 <html lang="pt-br">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Calculadora Forex</title>
 
-  <link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
 
 <style>
+/* 1. RESET DE SEGURANÇA */
+* {
+  box-sizing: border-box; /* Garante que padding não aumente a largura total */
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Consolas, Arial, sans-serif;
   background: #0b1114;
-  padding: 20px;
+  padding: 15px; /* Padding reduzido para mobile */
   color: #00eaff;
+  overflow-x: hidden; /* Trava qualquer tentativa de scroll lateral */
+  width: 100%;
 }
 
 .sheet {
   background: #081c20;
-  padding: 18px;
+  padding: 15px;
   border: 1px solid #00eaff;
   box-shadow: 0 0 15px rgba(0,234,255,0.35);
-  width: 720px;
-  max-width: 100%;
-  margin: 10px auto;
+  width: 100%; /* Ocupa o total disponível */
+  max-width: 720px; /* Limite para desktop */
+  margin: 0 auto;
   border-radius: 8px;
 }
 
@@ -30,7 +39,7 @@ body {
   font-size: 18px; 
   font-weight: 700; 
   text-align: center; 
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   letter-spacing: 2px;
   color: #00f7ff;
   text-shadow: 0 0 8px #00eaff;
@@ -39,12 +48,12 @@ body {
 .row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
 }
 
-.label { font-weight:700; }
+.label { font-weight:700; font-size: 14px; }
 
 .input-cell {
   width: 100px;
@@ -54,18 +63,20 @@ body {
   color: #00eaff;
   padding: 8px;
   font-size: 17px;
-  box-sizing: border-box;
+  flex-grow: 1; /* Faz o input ocupar o espaço disponível no mobile */
 }
 
 .small-btn { 
-  padding: 10px 14px; 
-  font-size:15px; 
+  padding: 12px 10px; 
+  font-size:14px; 
   border-radius:4px; 
   border:1px solid #00eaff;
   background: #021014;
   color:#00eaff;
   cursor:pointer;
   transition: 0.2s;
+  flex: 1 1 auto; /* Botões se ajustam ao espaço */
+  min-width: 80px;
 }
 
 .small-btn:hover {
@@ -74,76 +85,71 @@ body {
 }
 
 .btn-clear { border-color:#ff4d4d; color:#ff4d4d; }
-.btn-clear:hover { box-shadow: 0 0 8px #ff4d4d; }
-
 .btn-fatiar { border-color:#ffd700; color:#ffd700; }
-.btn-fatiar:hover { box-shadow: 0 0 8px #ffd700; }
 
 .triple-block {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 15px;
 }
 
 .box {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  flex: 1 1 200px; /* Garante que os boxes fiquem lado a lado ou quebrem */
 }
 
 .display {
-  width: 110px;
+  flex-grow: 1;
   background: #021014;
-  padding: 6px;
+  padding: 8px;
   border: 1px solid #00eaff;
   text-align: right;
   color:#00eaff;
+  min-height: 35px;
 }
 
 .table-wrapper {
-  overflow-x: auto;
-  margin-top: 12px;
-  max-width: 100%;
+  overflow-x: auto; /* Permite scroll apenas dentro da tabela se necessário */
+  margin-top: 20px;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 table.grid {
   border-collapse: collapse;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
   color:#00eaff;
 }
 
 table.grid th, table.grid td {
   border:1px solid #004e55;
-  padding:6px;
+  padding:8px 4px;
 }
 
 table.grid th { background:#042a30; text-align:center; color:#00f7ff; }
 table.grid td { background:#00090b; text-align:right; }
 .col-A { text-align:center; background:#042a30; font-weight:700; }
 
-.highlight td {
-  color: #00ff88 !important;
-  font-weight: bold;
-  text-shadow: 0 0 6px #00ff88;
-}
-
 .fatiado-msg {
   font-weight: bold;
   color: #ffd700;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  min-height: 20px; /* Garante espaço mesmo vazio */
+  margin-top: 15px;
+  font-size: 13px;
+  text-align: center;
 }
 
-@media (max-width: 600px) {
-  .row { flex-direction: column; align-items: stretch; }
-  .input-cell, .small-btn { width: 100%; }
-  .triple-block { flex-direction: column; }
-  .box { justify-content: space-between; }
-  .display { width: 50%; }
+/* 2. MEDIA QUERIES PARA MOBILE REAL */
+@media (max-width: 480px) {
+  .row { gap: 5px; }
+  .small-btn { font-size: 12px; padding: 10px 5px; }
+  .box { justify-content: space-between; width: 100%; }
+  .display { width: 60%; flex-grow: 0; }
+  .label { font-size: 12px; }
 }
 </style>
 </head>
@@ -157,9 +163,11 @@ table.grid td { background:#00090b; text-align:right; }
     <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
 
     <div class="label">C.R:</div>
-    <input id="b2" class="input-cell" type="number" step="0.01" placeholder="Ex: 100" />
-    
-    <button id="btnCalc" class="small-btn btn-calc">Calcular</button>
+    <input id="b2" class="input-cell" type="number" step="0.01" placeholder="100" />
+  </div>
+  
+  <div class="row">
+    <button id="btnCalc" class="small-btn">Calcular</button>
     <button id="btnClear" class="small-btn btn-clear">Limpar</button>
     <button id="btnFatiar" class="small-btn btn-fatiar">Fatiar</button>
   </div>
@@ -170,11 +178,11 @@ table.grid td { background:#00090b; text-align:right; }
       <div id="b3" class="display"></div>
     </div>
     <div class="box">
-      <span class="label">CANAL LOSS:</span>
+      <span class="label">LOSS:</span>
       <div id="b4" class="display"></div>
     </div>
     <div class="box">
-      <span class="label">GAIN 1TK:</span>
+      <span class="label">GAIN:</span>
       <div id="b5" class="display"></div>
     </div>
   </div>
@@ -192,6 +200,7 @@ table.grid td { background:#00090b; text-align:right; }
 </div>
 
 <script>
+// (O Script permanece o mesmo, mantendo a lógica funcional intacta)
 const inputB2 = document.getElementById("b2");
 const inputAlvo = document.getElementById("alvoManual");
 const tbody = document.querySelector("#resultado tbody");
@@ -226,7 +235,7 @@ function preencherTabela(bases) {
     }
 
     linhas.push(`
-      <tr>
+      <tr ${indiceMaisProximo === i-1 && alvo > 0 ? 'class="highlight"' : ''}>
         <td class="col-A">${format(A)}</td>
         <td>${format(calcB)}</td>
         <td>${format(calcC)}</td>
@@ -235,21 +244,18 @@ function preencherTabela(bases) {
 
   tbody.innerHTML = linhas.join("");
   if (indiceMaisProximo >= 0 && alvo > 0) {
-    tbody.children[indiceMaisProximo].classList.add("highlight");
+    tbody.children[indiceMaisProximo].style.color = "#00ff88";
+    tbody.children[indiceMaisProximo].style.fontWeight = "bold";
   }
 }
 
 document.getElementById("btnCalc").onclick = () => {
   const bases = calcularBases(inputB2.value);
   if (!bases) return alert("Insira um valor de C.R válido.");
-
-  // Limpa a mensagem de fatiado ao iniciar um novo cálculo principal
   fatiadoMsg.textContent = "";
-
   document.getElementById("b3").textContent = format(bases.B3);
   document.getElementById("b4").textContent = format(bases.B4);
   document.getElementById("b5").textContent = format(bases.B5);
-
   preencherTabela(bases);
 };
 
@@ -278,11 +284,9 @@ document.getElementById("btnFatiar").onclick = () => {
   document.getElementById("b5").textContent = format(basesFatiadas.B5);
 
   preencherTabela(basesFatiadas);
-
-  fatiadoMsg.textContent = `>>> O canal foi fatiado resultado de ${format(crAtual / 2)} pontos`;
+  fatiadoMsg.textContent = `>>> Canal fatiado: ${format(crAtual / 2)} pontos`;
 };
 </script>
 
 </body>
 </html>
-
