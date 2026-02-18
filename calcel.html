@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora Forex</title>
+<style>
+  body {
+    font-family: "Calibri", Arial, sans-serif;
+    background: #e6e6e6;
+    padding: 20px;
+  }
+
+  .sheet {
+    background: white;
+    padding: 18px;
+    border: 1px solid #bbb;
+    box-shadow: 0 0 8px #aaa;
+    width: 620px;
+    max-width: 100%;
+    margin: 10px auto;
+  }
+
+  .title { 
+    font-size: 18px; 
+    font-weight: 700; 
+    text-align: center; 
+    margin-bottom: 12px; 
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .label { 
+    width: 40px; 
+    font-weight:700; 
+  }
+
+  .input-cell {
+    width: 120px;
+    text-align: right;
+    border: none;
+    background: #fff9cc;
+    padding: 8px;
+    font-size: 17px;
+    box-sizing: border-box;
+  }
+
+  .small-btn { 
+    padding: 10px 14px; 
+    font-size:15px; 
+    border-radius:4px; 
+    border:none; 
+    cursor:pointer; 
+  }
+
+  .btn-calc { background:#4a7cff; color:white; }
+  .btn-calc:hover { background:#2c5de0; }
+
+  .btn-clear { background:#ff5757; color:white; }
+  .btn-clear:hover { background:#d63d3d; }
+
+  .btn-fatiar { background:#7f2aff; color:white; }
+  .btn-fatiar:hover { background:#651ac9; }
+
+  .notice { 
+    color:#a00; 
+    font-size:13px; 
+    margin-left:6px; 
+  }
+
+  .triple-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .display {
+    width: 110px;
+    background: #e8f1ff;
+    padding: 6px;
+    border: 1px solid #88aaff;
+    text-align: right;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 12px;
+    max-width: 100%;
+  }
+
+  table.grid {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+  }
+
+  table.grid th, table.grid td {
+    border:1px solid #aaa;
+    padding:6px;
+  }
+
+  table.grid th { 
+    background:#d9d9d9; 
+    text-align:center; 
+  }
+
+  table.grid td { 
+    background:#fff; 
+    text-align:right; 
+  }
+
+  .col-A { 
+    white-space: nowrap;
+    width: 1%;
+    text-align:center; 
+    background:#fafafa; 
+    font-weight:700; 
+  }
+
+  .highlight td {
+    color: red !important;
+    font-weight: bold;
+  }
+
+  .fatiado-msg {
+    font-weight: bold;
+    color: #000000;
+    margin-top: 12px;   /* Espaço de 1 linha acima da mensagem */
+    margin-bottom: 6px;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+
+    .sheet {
+      padding: 14px;
+      margin: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .input-cell {
+      width: 100%;
+      font-size: 18px;
+    }
+
+    .small-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 17px;
+    }
+
+    .triple-block {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .box {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .display {
+      width: 50%;
+      padding: 10px;
+      font-size: 17px;
+    }
+
+    .table-wrapper {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="title">CALCULADORA FOREX</div>
+
+  <div class="row">
+    <div class="label">C.R:</div>
+    <input id="b2" class="input-cell" type="number" step="0.01" placeholder="Ex: 100" />
+    <button id="btnCalc" class="small-btn btn-calc">Calcular</button>
+    <button id="btnClear" class="small-btn btn-clear">Limpar</button>
+    <button id="btnFatiar" class="small-btn btn-fatiar">Fatiar</button>
+    <div id="msg" class="notice" aria-live="polite"></div>
+  </div>
+
+  <div class="triple-block">
+    <div class="box">
+      <span class="label">CR+ZN:</span>
+      <div id="b3" class="display"></div>
+    </div>
+    <div class="box">
+      <span class="label">CANAL LOSS:</span>
+      <div id="b4" class="display"></div>
+    </div>
+    <div class="box">
+      <span class="label">GAIN 1TK:</span>
+      <div id="b5" class="display"></div>
+    </div>
+  </div>
+
+  <!-- Mensagem do fatiado -->
+  <div id="fatiadoMsg" class="fatiado-msg"></div>
+
+  <div class="table-wrapper">
+    <table class="grid" id="resultado">
+      <thead>
+        <tr><th class="col-A">CONT</th><th>U$ LOSS</th><th>U$ GAIN</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const valoresMes = {
+    0: 25.00, 
+    1: 37.50,
+    2: 56.25,
+    3: 84.38,
+    4: 126.56,
+    5: 189.84,
+    6: 284.77,
+    7: 427.15,
+    8: 640.72,
+    9: 961.08,
+    10: 1441.63,
+    11: 2162.44
+  };
+
+  function valorDoMes() {
+    const mes = new Date().getMonth();
+    return mes === 11 ? 25.00 : valoresMes[mes];
+  }
+
+  function calcularBases(B2) {
+    const n = Number(B2);
+    if (!isFinite(n)) return null;
+    return {
+      B3: n * 2,
+      B4: (n / 4) * 9,
+      B5: (n / 4) * 8
+    };
+  }
+
+  function calcularLinha(A, B4, B5) {
+    return { B: A * B4, C: A * B5 };
+  }
+
+  const inputB2 = document.getElementById("b2");
+  const tbody = document.querySelector("#resultado tbody");
+  const fatiadoMsg = document.getElementById("fatiadoMsg");
+
+  function format(v) { return Number(v).toFixed(2); }
+
+  function preencherTabela(bases) {
+    tbody.innerHTML = "";
+
+    const alvo = valorDoMes();
+    let menorDiferenca = Infinity;
+    let indiceMaisProximo = -1;
+
+    const linhas = [];
+
+    for (let i = 1; i <= 109; i++) {
+      const A = i / 100;
+      const calc = calcularLinha(A, bases.B4, bases.B5);
+
+      const diferenca = Math.abs(calc.C - alvo);
+      if (diferenca < menorDiferenca) {
+        menorDiferenca = diferenca;
+        indiceMaisProximo = i - 1;
+      }
+
+      linhas.push(`
+        <tr>
+          <td class="col-A">${format(A)}</td>
+          <td>${format(calc.B)}</td>
+          <td>${format(calc.C)}</td>
+        </tr>`);
+    }
+
+    tbody.innerHTML = linhas.join("");
+
+    if (indiceMaisProximo >= 0) {
+      tbody.children[indiceMaisProximo].classList.add("highlight");
+    }
+  }
+
+  document.getElementById("btnCalc").onclick = () => {
+    const valor = inputB2.value;
+    const bases = calcularBases(valor);
+    if (!bases) return alert("Valor inválido");
+
+    document.getElementById("b3").textContent = format(bases.B3);
+    document.getElementById("b4").textContent = format(bases.B4);
+    document.getElementById("b5").textContent = format(bases.B5);
+
+    preencherTabela(bases);
+
+    // reseta botão Fatiar
+    const btn = document.getElementById("btnFatiar");
+    btn.style.backgroundColor = "#7f2aff";
+    btn.textContent = "Fatiar";
+
+    fatiadoMsg.textContent = ""; // limpa mensagem
+  };
+
+  document.getElementById("btnClear").onclick = () => {
+    inputB2.value = "";
+    document.getElementById("b3").textContent = "";
+    document.getElementById("b4").textContent = "";
+    document.getElementById("b5").textContent = "";
+    tbody.innerHTML = "";
+
+    const btn = document.getElementById("btnFatiar");
+    btn.style.backgroundColor = "#7f2aff";
+    btn.textContent = "Fatiar";
+
+    fatiadoMsg.textContent = ""; // limpa mensagem
+  };
+
+  document.getElementById("btnFatiar").onclick = () => {
+    const b2 = Number(inputB2.value);
+    const b3 = Number(document.getElementById("b3").textContent);
+    const b4 = Number(document.getElementById("b4").textContent);
+    const b5 = Number(document.getElementById("b5").textContent);
+
+    if (!b3 || !b4 || !b5) return alert("Calcule primeiro para poder fatiar!");
+
+    // divide apenas os valores B3, B4, B5
+    const basesFatiadas = {
+      B3: b3 / 2,
+      B4: b4 / 2,
+      B5: b5 / 2
+    };
+
+    document.getElementById("b3").textContent = format(basesFatiadas.B3);
+    document.getElementById("b4").textContent = format(basesFatiadas.B4);
+    document.getElementById("b5").textContent = format(basesFatiadas.B5);
+
+    preencherTabela(basesFatiadas);
+
+    // botão amarelo e texto "Fatiado!"
+    const btn = document.getElementById("btnFatiar");
+    btn.style.backgroundColor = "#FFD700";
+    btn.textContent = "Fatiado!";
+
+    // mensagem usando o valor C.R fatiado (somente na mensagem)
+    fatiadoMsg.textContent = `>>> O canal foi fatiado resultado de ${format(b2 / 2)} pontos`;
+  };
+</script>
+
+</body>
+</html>
