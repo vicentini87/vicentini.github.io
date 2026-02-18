@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trader Panel</title>
 
+<link rel="icon" type="image/png" href="https://www.fxpro.com/favicon-32x32.png">
+
 <style>
 * {
     margin: 0;
@@ -39,7 +41,7 @@ body {
 h1 {
     font-size: 18px;
     letter-spacing: 3px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-shadow: 0 0 10px #00ffff;
 }
 
@@ -67,9 +69,9 @@ h1 {
 
 /* Mercado */
 .market {
-    margin-top: 15px;
+    margin-top: 14px;
     border-top: 1px solid rgba(0,255,255,0.3);
-    padding-top: 12px;
+    padding-top: 10px;
 }
 
 .asset {
@@ -80,15 +82,6 @@ h1 {
     border: 1px solid rgba(0,255,255,0.3);
     border-radius: 6px;
     box-shadow: inset 0 0 8px rgba(0,255,255,0.1);
-}
-
-.asset-name {
-    font-size: 13px;
-}
-
-.asset-price {
-    font-size: 16px;
-    text-shadow: 0 0 8px #00ffff;
 }
 
 /* Relógios */
@@ -102,9 +95,33 @@ h1 {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
+    padding: 3px 0;
+}
+
+/* Sessões */
+.sessions {
+    margin-top: 12px;
+    border-top: 1px solid rgba(0,255,255,0.3);
+    padding-top: 10px;
+}
+
+.session {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
     padding: 4px 0;
 }
 
+.open {
+    color: #00ff88;
+    text-shadow: 0 0 6px #00ff88;
+}
+
+.closed {
+    color: #ff4d4d;
+}
+
+/* Status */
 .status {
     margin-top: 10px;
     font-size: 10px;
@@ -121,29 +138,38 @@ h1 {
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calcel.html">CÁLCULO</a>
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">PEDIDO</a>
 
+    <!-- Mercado -->
     <div class="market">
         <div class="asset">
-            <div class="asset-name">USD / BRL</div>
-            <div class="asset-price" id="usd">--</div>
+            <span>USD / BRL</span>
+            <span id="usd">--</span>
         </div>
 
         <div class="asset">
-            <div class="asset-name">XAU / USD</div>
-            <div class="asset-price" id="gold">--</div>
+            <span>XAU / USD</span>
+            <span id="gold">--</span>
         </div>
     </div>
 
+    <!-- Relógios -->
     <div class="clocks">
+        <div class="clock"><span>HONG KONG</span><span id="hk"></span></div>
         <div class="clock"><span>NEW YORK</span><span id="ny"></span></div>
         <div class="clock"><span>LONDON</span><span id="ldn"></span></div>
-        <div class="clock"><span>HONG KONG</span><span id="hk"></span></div>
+    </div>
+
+    <!-- Sessões -->
+    <div class="sessions">
+        <div class="session"><span>ASIA</span><span id="asiaStatus"></span></div>
+        <div class="session"><span>LONDON</span><span id="londonStatus"></span></div>
+        <div class="session"><span>NEW YORK</span><span id="nyStatus"></span></div>
     </div>
 
     <div class="status">AUTO UPDATE</div>
 </div>
 
 <script>
-// -------- USD/BRL --------
+// -------- USD --------
 async function atualizarUSD() {
     try {
         const r = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
@@ -155,42 +181,86 @@ async function atualizarUSD() {
     }
 }
 
-// -------- OURO XAU/USD --------
+// -------- OURO --------
 async function atualizarOuro() {
     try {
         const resposta = await fetch(
             "https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD"
         );
-
         const dados = await resposta.json();
-
-        // preço do ouro por onça
         const preco = dados.items[0].xauPrice;
 
         document.getElementById("gold").innerText =
             "$ " + parseFloat(preco).toFixed(2);
-
-    } catch (erro) {
+    } catch {
         document.getElementById("gold").innerText = "Erro";
     }
 }
-
 
 // -------- RELÓGIOS --------
 function atualizarRelogios() {
     const agora = new Date();
 
+    document.getElementById("hk").innerText =
+        agora.toLocaleTimeString("pt-BR", {
+            timeZone: "Asia/Hong_Kong",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+
     document.getElementById("ny").innerText =
-        agora.toLocaleTimeString("pt-BR", { timeZone: "America/New_York", hour12: false });
+        agora.toLocaleTimeString("pt-BR", {
+            timeZone: "America/New_York",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
 
     document.getElementById("ldn").innerText =
-        agora.toLocaleTimeString("pt-BR", { timeZone: "Europe/London", hour12: false });
-
-    document.getElementById("hk").innerText =
-        agora.toLocaleTimeString("pt-BR", { timeZone: "Asia/Hong_Kong", hour12: false });
+        agora.toLocaleTimeString("pt-BR", {
+            timeZone: "Europe/London",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
 }
 
-// -------- ATUALIZAÇÕES --------
+// -------- SESSÕES --------
+// Horários baseados no horário de New York
+function atualizarSessoes() {
+    const nyTime = new Date().toLocaleString("en-US", {
+        timeZone: "America/New_York"
+    });
+
+    const horaNY = new Date(nyTime).getHours();
+
+    // Asia: 21–06
+    const asiaOpen = (horaNY >= 21 || horaNY < 6);
+
+    // London: 03–12
+    const londonOpen = (horaNY >= 3 && horaNY < 12);
+
+    // New York: 08–17
+    const nyOpen = (horaNY >= 8 && horaNY < 17);
+
+    atualizarStatus("asiaStatus", asiaOpen);
+    atualizarStatus("londonStatus", londonOpen);
+    atualizarStatus("nyStatus", nyOpen);
+}
+
+function atualizarStatus(id, aberto) {
+    const el = document.getElementById(id);
+    if (aberto) {
+        el.innerText = "OPEN";
+        el.className = "open";
+    } else {
+        el.innerText = "CLOSED";
+        el.className = "closed";
+    }
+}
+
+// -------- ATUALIZAÇÃO --------
 function atualizarTudo() {
     atualizarUSD();
     atualizarOuro();
@@ -198,11 +268,12 @@ function atualizarTudo() {
 
 atualizarTudo();
 atualizarRelogios();
+atualizarSessoes();
 
-setInterval(atualizarTudo, 60000);   // preços
-setInterval(atualizarRelogios, 1000); // relógios em tempo real
+setInterval(atualizarTudo, 60000);
+setInterval(atualizarRelogios, 1000);
+setInterval(atualizarSessoes, 60000);
 </script>
 
 </body>
 </html>
-
