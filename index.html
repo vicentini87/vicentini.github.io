@@ -136,9 +136,9 @@ h1 {
     <h1>TRADER PANEL</h1>
 
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calcel.html">CÁLCULO</a>
+    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/calceurusd.html">CÁLCULO USD</a>
     <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">PEDIDO</a>
 
-    <!-- Mercado -->
     <div class="market">
         <div class="asset">
             <span>USD / BRL</span>
@@ -151,18 +151,16 @@ h1 {
         </div>
     </div>
 
-    <!-- Relógios -->
     <div class="clocks">
         <div class="clock"><span>HONG KONG</span><span id="hk"></span></div>
         <div class="clock"><span>NEW YORK</span><span id="ny"></span></div>
         <div class="clock"><span>LONDON</span><span id="ldn"></span></div>
     </div>
 
-    <!-- Sessões -->
     <div class="sessions">
-        <div class="session"><span>ASIA</span><span id="asiaStatus"></span></div>
-        <div class="session"><span>LONDON</span><span id="londonStatus"></span></div>
+        <div class="session"><span>HONG KONG</span><span id="hkStatus"></span></div>
         <div class="session"><span>NEW YORK</span><span id="nyStatus"></span></div>
+        <div class="session"><span>LONDON</span><span id="londonStatus"></span></div>
     </div>
 
     <div class="status">AUTO UPDATE</div>
@@ -201,56 +199,46 @@ async function atualizarOuro() {
 function atualizarRelogios() {
     const agora = new Date();
 
+    const options = { hour: "2-digit", minute: "2-digit", hour12: false };
+
     document.getElementById("hk").innerText =
-        agora.toLocaleTimeString("pt-BR", {
-            timeZone: "Asia/Hong_Kong",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-        });
+        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "Asia/Hong_Kong" });
 
     document.getElementById("ny").innerText =
-        agora.toLocaleTimeString("pt-BR", {
-            timeZone: "America/New_York",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-        });
+        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "America/New_York" });
 
     document.getElementById("ldn").innerText =
-        agora.toLocaleTimeString("pt-BR", {
-            timeZone: "Europe/London",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-        });
+        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "Europe/London" });
 }
 
 // -------- SESSÕES --------
-// Horários baseados no horário de New York
 function atualizarSessoes() {
-    const nyTime = new Date().toLocaleString("en-US", {
-        timeZone: "America/New_York"
-    });
+    // Pegando as horas atuais em cada fuso para facilitar a lógica
+    const getHourInTZ = (tz) => {
+        return parseInt(new Date().toLocaleString("en-GB", { timeZone: tz, hour: '2-digit', hour12: false }));
+    };
 
-    const horaNY = new Date(nyTime).getHours();
+    const horaHK = getHourInTZ("Asia/Hong_Kong");
+    const horaNY = getHourInTZ("America/New_York");
+    const horaLDN = getHourInTZ("Europe/London");
 
-    // Asia: 21–06
-    const asiaOpen = (horaNY >= 21 || horaNY < 6);
+    // Hong Kong (Asia): 09:00 - 18:00 (Local)
+    const hkOpen = (horaHK >= 9 && horaHK < 18);
 
-    // London: 03–12
-    const londonOpen = (horaNY >= 3 && horaNY < 12);
-
-    // New York: 08–17
+    // New York: 08:00 - 17:00 (Local)
     const nyOpen = (horaNY >= 8 && horaNY < 17);
 
-    atualizarStatus("asiaStatus", asiaOpen);
-    atualizarStatus("londonStatus", londonOpen);
+    // London: 08:00 - 17:00 (Local)
+    const londonOpen = (horaLDN >= 8 && horaLDN < 17);
+
+    atualizarStatus("hkStatus", hkOpen);
     atualizarStatus("nyStatus", nyOpen);
+    atualizarStatus("londonStatus", londonOpen);
 }
 
 function atualizarStatus(id, aberto) {
     const el = document.getElementById(id);
+    if (!el) return;
     if (aberto) {
         el.innerText = "OPEN";
         el.className = "open";
@@ -277,4 +265,3 @@ setInterval(atualizarSessoes, 60000);
 
 </body>
 </html>
-
