@@ -252,7 +252,7 @@ function preencherTabela(bases) {
   // Terceiro passo: Aplicar destaque na linha do alvo (calculado sobre LOSS)
   if (indiceMaisProximo >= 0 && alvo > 0) {
     const row = tbody.children[indiceMaisProximo];
-    row.style.color = "#00ff88"; // Laranja vibrante para destaque do LOSS
+    row.style.color = "#ffae00"; // Laranja vibrante para destaque do LOSS
     row.style.fontWeight = "bold";
     row.style.backgroundColor = "rgba(255, 174, 0, 0.1)"; // Fundo sutil
   }
@@ -299,3 +299,4 @@ document.getElementById("btnFatiar").onclick = () => {
 
 </body>
 </html>
+
