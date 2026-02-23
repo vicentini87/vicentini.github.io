@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Calculadora EURUSD</title>
+<title>Calculadora EURUSD - Ajustada</title>
 
 <link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
 
@@ -135,10 +135,12 @@ table.grid th { background:#042a30; text-align:center; color:#00f7ff; }
 table.grid td { background:#00090b; text-align:right; }
 .col-A { text-align:center; background:#042a30; font-weight:700; }
 
+/* Estilo para a linha do alvo (baseada em LOSS) */
 .highlight td {
-  color: #00ff88 !important;
+  color: #ffae00 !important;
   font-weight: bold;
-  background: #063a35 !important;
+  background: #2a1b00 !important;
+  border: 1px solid #ffae00;
 }
 
 .fatiado-msg {
@@ -164,7 +166,7 @@ table.grid td { background:#00090b; text-align:right; }
   <div class="title">CALCULADORA EURUSD</div>
 
   <div class="row">
-    <div class="label">ALVO:</div>
+    <div class="label">ALVO (LOSS):</div>
     <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
 
     <div class="label">C.R:</div>
@@ -215,6 +217,7 @@ function format(v) { return Number(v).toFixed(2); }
 function calcularBases(B2) {
   const n = Number(B2);
   if (!isFinite(n) || n === 0) return null;
+  // EURUSD usa divisor 8 conforme seu código original
   return { B3: n * 2, B4: (n / 8) * 9, B5: (n / 8) * 8 };
 }
 
@@ -228,28 +231,40 @@ function preencherTabela(bases) {
   }
 
   let menorDiferenca = Infinity;
-  let melhorLinha = null;
+  let melhorIndice = -1;
 
+  // 1. Localiza o índice do melhor LOSS
   for (let i = 1; i <= 10000; i++) {
     const A = i / 100;
     const calcB = A * bases.B4;
-    const calcC = A * bases.B5;
-
-    const diferenca = Math.abs(calcC - alvo);
+    const diferenca = Math.abs(calcB - alvo);
+    
     if (diferenca < menorDiferenca) {
       menorDiferenca = diferenca;
-      melhorLinha = { A, calcB, calcC };
+      melhorIndice = i;
     }
   }
 
-  if (melhorLinha) {
-    tbody.innerHTML = `
-      <tr class="highlight">
-        <td class="col-A">${format(melhorLinha.A)}</td>
-        <td>${format(melhorLinha.calcB)}</td>
-        <td>${format(melhorLinha.calcC)}</td>
+  // 2. Define o intervalo (3 acima, alvo, 3 abaixo)
+  const inicio = Math.max(1, melhorIndice - 3);
+  const fim = melhorIndice + 3;
+  let html = "";
+
+  for (let i = inicio; i <= fim; i++) {
+    const A = i / 100;
+    const calcB = A * bases.B4;
+    const calcC = A * bases.B5;
+    const isTarget = (i === melhorIndice);
+
+    html += `
+      <tr class="${isTarget ? 'highlight' : ''}">
+        <td class="col-A">${format(A)}</td>
+        <td>${format(calcB)}</td>
+        <td>${format(calcC)}</td>
       </tr>`;
   }
+
+  tbody.innerHTML = html;
 }
 
 document.getElementById("btnCalc").onclick = () => {
@@ -273,38 +288,23 @@ document.getElementById("btnClear").onclick = () => {
 };
 
 document.getElementById("btnFatiar").onclick = () => {
-  const b3Val = document.getElementById("b3").textContent;
-  if (!b3Val) return alert("Calcule primeiro!");
+  const crAtual = Number(inputB2.value);
+  if (!crAtual) return alert("Calcule primeiro!");
 
-  // 1. Atualiza Displays Superiores
-  document.getElementById("b3").textContent = format(Number(document.getElementById("b3").textContent) / 2);
-  document.getElementById("b4").textContent = format(Number(document.getElementById("b4").textContent) / 2);
-  document.getElementById("b5").textContent = format(Number(document.getElementById("b5").textContent) / 2);
-
-  // 2. Fatiar a linha da tabela (CONT, LOSS e GAIN)
-  const linhaDestaque = tbody.querySelector(".highlight");
-  if (linhaDestaque) {
-    const colunas = linhaDestaque.querySelectorAll("td");
-    const novoCont = Number(colunas[0].textContent) / 2;
-    const novoLoss = Number(colunas[1].textContent) / 2;
-    const novoGain = Number(colunas[2].textContent) / 2;
-
-    tbody.innerHTML = `
-      <tr class="highlight">
-        <td class="col-A">${format(novoCont)}</td>
-        <td>${format(novoLoss)}</td>
-        <td>${format(novoGain)}</td>
-      </tr>`;
-  }
-
-  // 3. Atualiza o C.R base para acompanhar o fatiamento
-  const novoCR = Number(inputB2.value) / 2;
+  // Atualiza CR para o novo cálculo de bases
+  const novoCR = crAtual / 2;
   inputB2.value = novoCR;
+
+  const basesFatiadas = calcularBases(novoCR);
+  
+  document.getElementById("b3").textContent = format(basesFatiadas.B3);
+  document.getElementById("b4").textContent = format(basesFatiadas.B4);
+  document.getElementById("b5").textContent = format(basesFatiadas.B5);
+
+  preencherTabela(basesFatiadas);
   fatiadoMsg.textContent = `>>> Canal e Lote fatiados: ${format(novoCR)} pontos`;
 };
 </script>
 
 </body>
-
 </html>
-
