@@ -1,270 +1,239 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trader Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Forex - Global</title>
 
-<link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Consolas, Arial, sans-serif;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
 
-body {
-    background: #000;
-    color: #00ffff;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        body {
+            background: #050a0a;
+            color: #00ffff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-/* Painel */
-.panel {
-    width: 92%;
-    max-width: 380px;
-    padding: 22px 16px;
-    border: 1px solid #00ffff;
-    border-radius: 10px;
-    background: rgba(0,20,20,0.25);
-    box-shadow:
-        0 0 15px rgba(0,255,255,0.4),
-        inset 0 0 20px rgba(0,255,255,0.15);
-    text-align: center;
-}
+        .panel {
+            width: 95%;
+            max-width: 420px;
+            padding: 25px 20px;
+            border: 1px solid #00ffff;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0,20,20,0.6) 0%, rgba(0,5,5,0.9) 100%);
+            box-shadow: 0 0 25px rgba(0,255,255,0.2);
+            text-align: center;
+        }
 
-h1 {
-    font-size: 18px;
-    letter-spacing: 3px;
-    margin-bottom: 12px;
-    text-shadow: 0 0 10px #00ffff;
-}
+        h1 {
+            font-size: 15px;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px #00ffff;
+            border-bottom: 1px solid rgba(0,255,255,0.2);
+            padding-bottom: 10px;
+        }
 
-/* Botões */
-.btn {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    margin: 8px 0;
-    border: 1px solid #00ffff;
-    border-radius: 6px;
-    text-decoration: none;
-    color: #00ffff;
-    letter-spacing: 2px;
-    font-size: 15px;
-    transition: 0.25s;
-}
+        .btn-group { margin-bottom: 15px; }
 
-.btn:active { transform: scale(0.97); }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #00ffff;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #00ffff;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: rgba(0, 255, 255, 0.05);
+        }
 
-.btn:hover {
-    background: rgba(0,255,255,0.15);
-    box-shadow: 0 0 12px #00ffff;
-}
+        .btn:hover { background: rgba(0, 255, 255, 0.2); box-shadow: 0 0 12px rgba(0, 255, 255, 0.4); }
+        .btn-news { border-color: #ffd700; color: #ffd700; }
 
-/* Mercado */
-.market {
-    margin-top: 14px;
-    border-top: 1px solid rgba(0,255,255,0.3);
-    padding-top: 10px;
-}
+        .section-title {
+            font-size: 9px;
+            text-align: left;
+            margin: 15px 0 5px 5px;
+            opacity: 0.5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-.asset {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px;
-    margin: 6px 0;
-    border: 1px solid rgba(0,255,255,0.3);
-    border-radius: 6px;
-    box-shadow: inset 0 0 8px rgba(0,255,255,0.1);
-}
+        .asset {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0,255,255,0.03);
+            border: 1px solid rgba(0,255,255,0.15);
+            font-size: 14px;
+        }
 
-/* Relógios */
-.clocks {
-    margin-top: 12px;
-    border-top: 1px solid rgba(0,255,255,0.3);
-    padding-top: 10px;
-}
+        /* Grid de 4 Sessões */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(0,255,255,0.2);
+            padding-top: 10px;
+        }
 
-.clock {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    padding: 3px 0;
-}
+        .item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
 
-/* Sessões */
-.sessions {
-    margin-top: 12px;
-    border-top: 1px solid rgba(0,255,255,0.3);
-    padding-top: 10px;
-}
+        .open { color: #00ff88; text-shadow: 0 0 5px #00ff88; font-weight: bold; }
+        .closed { color: #ff4d4d; opacity: 0.6; }
 
-.session {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    padding: 4px 0;
-}
+        /* Alerta de Liquidez */
+        #overlap-alert {
+            font-size: 10px;
+            color: #ffd700;
+            margin-top: 10px;
+            height: 15px;
+            font-style: italic;
+        }
 
-.open {
-    color: #00ff88;
-    text-shadow: 0 0 6px #00ff88;
-}
-
-.closed {
-    color: #ff4d4d;
-}
-
-/* Status */
-.status {
-    margin-top: 10px;
-    font-size: 10px;
-    opacity: 0.6;
-    letter-spacing: 2px;
-}
-</style>
+        .status-footer {
+            margin-top: 15px;
+            font-size: 8px;
+            opacity: 0.3;
+            letter-spacing: 2px;
+        }
+    </style>
 </head>
 <body>
 
 <div class="panel">
-    <h1>TRADER PANEL</h1>
+    <h1>GLOBAL TRADER TERMINAL</h1>
 
-    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/xauusd.html">CÁLCULO XAU</a>
-    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/eurusd.html">CÁLCULO EURUSD</a>
-    <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/pedido.html">PEDIDO</a>
+    <div class="btn-group">
+        <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/xauusd.html">ANALISADOR XAUUSD</a>
+        <a class="btn" href="https://vicentini87.github.io/vicentini.github.io/eurusd.html">ANALISADOR EURUSD</a>
+        <a class="btn btn-news" href="https://www.forexfactory.com/calendar" target="_blank">FOREX FACTORY CALENDAR</a>
+    </div>
 
     <div class="market">
-        <div class="asset">
-            <span>USD / BRL</span>
-            <span id="usd">--</span>
+        <div class="asset"><span>USD/BRL</span><span id="usd">--</span></div>
+        <div class="asset"><span>XAU/USD</span><span id="gold">--</span></div>
+    </div>
+
+    <div id="overlap-alert"></div>
+
+    <div class="info-grid">
+        <div class="clock-box">
+            <div class="section-title">LOCAL TIMES</div>
+            <div class="item"><span>SYD</span><span id="syd"></span></div>
+            <div class="item"><span>TKY</span><span id="tky"></span></div>
+            <div class="item"><span>LDN</span><span id="ldn"></span></div>
+            <div class="item"><span>NYC</span><span id="ny"></span></div>
         </div>
-
-        <div class="asset">
-            <span>XAU / USD</span>
-            <span id="gold">--</span>
+        <div class="session-box">
+            <div class="section-title">MARKET STATUS</div>
+            <div class="item"><span>SYDNEY</span><span id="sydStatus"></span></div>
+            <div class="item"><span>TOKYO</span><span id="tkyStatus"></span></div>
+            <div class="item"><span>LONDON</span><span id="ldnStatus"></span></div>
+            <div class="item"><span>NEW YORK</span><span id="nyStatus"></span></div>
         </div>
     </div>
 
-    <div class="clocks">
-        <div class="clock"><span>HONG KONG</span><span id="hk"></span></div>
-        <div class="clock"><span>NEW YORK</span><span id="ny"></span></div>
-        <div class="clock"><span>LONDON</span><span id="ldn"></span></div>
-    </div>
-
-    <div class="sessions">
-        <div class="session"><span>HONG KONG</span><span id="hkStatus"></span></div>
-        <div class="session"><span>NEW YORK</span><span id="nyStatus"></span></div>
-        <div class="session"><span>LONDON</span><span id="londonStatus"></span></div>
-    </div>
-
-    <div class="status">AUTO UPDATE</div>
+    <div class="status-footer">REAL-TIME DATA STREAM ACTIVE</div>
 </div>
 
 <script>
-// -------- USD --------
-async function atualizarUSD() {
-    try {
-        const r = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
-        const d = await r.json();
-        document.getElementById("usd").innerText =
-            "R$ " + parseFloat(d.USDBRL.bid).toFixed(2);
-    } catch {
-        document.getElementById("usd").innerText = "Erro";
+    async function atualizarUSD() {
+        try {
+            const r = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
+            const d = await r.json();
+            document.getElementById("usd").innerText = "R$ " + parseFloat(d.USDBRL.bid).toFixed(2);
+        } catch { document.getElementById("usd").innerText = "Err"; }
     }
-}
 
-// -------- OURO --------
-async function atualizarOuro() {
-    try {
-        const resposta = await fetch(
-            "https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD"
-        );
-        const dados = await resposta.json();
-        const preco = dados.items[0].xauPrice;
-
-        document.getElementById("gold").innerText =
-            "$ " + parseFloat(preco).toFixed(2);
-    } catch {
-        document.getElementById("gold").innerText = "Erro";
+    async function atualizarOuro() {
+        try {
+            const r = await fetch("https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD");
+            const d = await r.json();
+            document.getElementById("gold").innerText = "$ " + parseFloat(d.items[0].xauPrice).toFixed(2);
+        } catch { document.getElementById("gold").innerText = "Err"; }
     }
-}
 
-// -------- RELÓGIOS --------
-function atualizarRelogios() {
-    const agora = new Date();
-
-    const options = { hour: "2-digit", minute: "2-digit", hour12: false };
-
-    document.getElementById("hk").innerText =
-        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "Asia/Hong_Kong" });
-
-    document.getElementById("ny").innerText =
-        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "America/New_York" });
-
-    document.getElementById("ldn").innerText =
-        agora.toLocaleTimeString("pt-BR", { ...options, timeZone: "Europe/London" });
-}
-
-// -------- SESSÕES --------
-function atualizarSessoes() {
-    // Pegando as horas atuais em cada fuso para facilitar a lógica
-    const getHourInTZ = (tz) => {
-        return parseInt(new Date().toLocaleString("en-GB", { timeZone: tz, hour: '2-digit', hour12: false }));
-    };
-
-    const horaHK = getHourInTZ("Asia/Hong_Kong");
-    const horaNY = getHourInTZ("America/New_York");
-    const horaLDN = getHourInTZ("Europe/London");
-
-    // Hong Kong (Asia): 09:00 - 18:00 (Local)
-    const hkOpen = (horaHK >= 9 && horaHK < 18);
-
-    // New York: 08:00 - 17:00 (Local)
-    const nyOpen = (horaNY >= 8 && horaNY < 17);
-
-    // London: 08:00 - 17:00 (Local)
-    const londonOpen = (horaLDN >= 8 && horaLDN < 17);
-
-    atualizarStatus("hkStatus", hkOpen);
-    atualizarStatus("nyStatus", nyOpen);
-    atualizarStatus("londonStatus", londonOpen);
-}
-
-function atualizarStatus(id, aberto) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (aberto) {
-        el.innerText = "OPEN";
-        el.className = "open";
-    } else {
-        el.innerText = "CLOSED";
-        el.className = "closed";
+    function atualizarRelogios() {
+        const agora = new Date();
+        const opt = { hour: "2-digit", minute: "2-digit", hour12: false };
+        
+        document.getElementById("syd").innerText = agora.toLocaleTimeString("pt-BR", { ...opt, timeZone: "Australia/Sydney" });
+        document.getElementById("tky").innerText = agora.toLocaleTimeString("pt-BR", { ...opt, timeZone: "Asia/Tokyo" });
+        document.getElementById("ldn").innerText = agora.toLocaleTimeString("pt-BR", { ...opt, timeZone: "Europe/London" });
+        document.getElementById("ny").innerText = agora.toLocaleTimeString("pt-BR", { ...opt, timeZone: "America/New_York" });
     }
-}
 
-// -------- ATUALIZAÇÃO --------
-function atualizarTudo() {
-    atualizarUSD();
-    atualizarOuro();
-}
+    function atualizarSessoes() {
+        const getHour = (tz) => parseInt(new Date().toLocaleString("en-GB", { timeZone: tz, hour: '2-digit', hour12: false }));
+        
+        const hSYD = getHour("Australia/Sydney");
+        const hTKY = getHour("Asia/Tokyo");
+        const hLDN = getHour("Europe/London");
+        const hNYC = getHour("America/New_York");
 
-atualizarTudo();
-atualizarRelogios();
-atualizarSessoes();
+        const sSYD = (hSYD >= 8 && hSYD < 17);
+        const sTKY = (hTKY >= 9 && hTKY < 18);
+        const sLDN = (hLDN >= 8 && hLDN < 17);
+        const sNYC = (hNYC >= 8 && hNYC < 17);
 
-setInterval(atualizarTudo, 60000);
-setInterval(atualizarRelogios, 1000);
-setInterval(atualizarSessoes, 60000);
+        const setStatus = (id, open) => {
+            const el = document.getElementById(id);
+            el.innerText = open ? "OPEN" : "CLOSED";
+            el.className = open ? "open" : "closed";
+        };
+
+        setStatus("sydStatus", sSYD);
+        setStatus("tkyStatus", sTKY);
+        setStatus("ldnStatus", sLDN);
+        setStatus("nyStatus", sNYC);
+
+        // Lógica de Overlap (Alta Liquidez)
+        const alertBox = document.getElementById("overlap-alert");
+        if (sLDN && sNYC) {
+            alertBox.innerText = "⚠ HIGH LIQUIDITY: LDN + NYC OVERLAP";
+        } else if (sTKY && sLDN) {
+            alertBox.innerText = "⚠ OVERLAP: TKY + LDN";
+        } else {
+            alertBox.innerText = "";
+        }
+    }
+
+    function tick() {
+        atualizarUSD();
+        atualizarOuro();
+        atualizarRelogios();
+        atualizarSessoes();
+    }
+
+    tick();
+    setInterval(tick, 60000); 
+    setInterval(atualizarRelogios, 1000); 
 </script>
 
 </body>
 </html>
-
-
-
