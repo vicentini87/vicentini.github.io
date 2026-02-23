@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Calculadora XAUUSD</title>
+<title>Calculadora XAUUSD - Alvo em LOSS</title>
 
 <link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
 
 <style>
 /* 1. RESET DE SEGURANÇA */
 * {
-  box-sizing: border-box; /* Garante que padding não aumente a largura total */
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -18,9 +18,9 @@
 body {
   font-family: Consolas, Arial, sans-serif;
   background: #0b1114;
-  padding: 15px; /* Padding reduzido para mobile */
+  padding: 15px;
   color: #00eaff;
-  overflow-x: hidden; /* Trava qualquer tentativa de scroll lateral */
+  overflow-x: hidden;
   width: 100%;
 }
 
@@ -29,8 +29,8 @@ body {
   padding: 15px;
   border: 1px solid #00eaff;
   box-shadow: 0 0 15px rgba(0,234,255,0.35);
-  width: 100%; /* Ocupa o total disponível */
-  max-width: 720px; /* Limite para desktop */
+  width: 100%;
+  max-width: 720px;
   margin: 0 auto;
   border-radius: 8px;
 }
@@ -50,7 +50,7 @@ body {
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
-  flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
+  flex-wrap: wrap;
 }
 
 .label { font-weight:700; font-size: 14px; }
@@ -63,7 +63,7 @@ body {
   color: #00eaff;
   padding: 8px;
   font-size: 17px;
-  flex-grow: 1; /* Faz o input ocupar o espaço disponível no mobile */
+  flex-grow: 1;
 }
 
 .small-btn { 
@@ -75,7 +75,7 @@ body {
   color:#00eaff;
   cursor:pointer;
   transition: 0.2s;
-  flex: 1 1 auto; /* Botões se ajustam ao espaço */
+  flex: 1 1 auto;
   min-width: 80px;
 }
 
@@ -99,7 +99,7 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  flex: 1 1 200px; /* Garante que os boxes fiquem lado a lado ou quebrem */
+  flex: 1 1 200px;
 }
 
 .display {
@@ -113,7 +113,7 @@ body {
 }
 
 .table-wrapper {
-  overflow-x: auto; /* Permite scroll apenas dentro da tabela se necessário */
+  overflow-x: auto;
   margin-top: 20px;
   width: 100%;
   -webkit-overflow-scrolling: touch;
@@ -143,7 +143,6 @@ table.grid td { background:#00090b; text-align:right; }
   text-align: center;
 }
 
-/* 2. MEDIA QUERIES PARA MOBILE REAL */
 @media (max-width: 480px) {
   .row { gap: 5px; }
   .small-btn { font-size: 12px; padding: 10px 5px; }
@@ -159,7 +158,7 @@ table.grid td { background:#00090b; text-align:right; }
   <div class="title">CALCULADORA XAUUSD</div>
 
   <div class="row">
-    <div class="label">ALVO:</div>
+    <div class="label">ALVO (LOSS):</div>
     <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
 
     <div class="label">C.R:</div>
@@ -200,7 +199,6 @@ table.grid td { background:#00090b; text-align:right; }
 </div>
 
 <script>
-// (O Script permanece o mesmo, mantendo a lógica funcional intacta)
 const inputB2 = document.getElementById("b2");
 const inputAlvo = document.getElementById("alvoManual");
 const tbody = document.querySelector("#resultado tbody");
@@ -221,21 +219,28 @@ function preencherTabela(bases) {
   let indiceMaisProximo = -1;
   const linhas = [];
 
+  // Primeiro passo: Identificar qual linha tem o LOSS mais próximo do Alvo
   for (let i = 1; i <= 109; i++) {
     const A = i / 100;
-    const calcB = A * bases.B4;
-    const calcC = A * bases.B5;
+    const calcB = A * bases.B4; // Coluna U$ LOSS
 
     if (alvo > 0) {
-      const diferenca = Math.abs(calcC - alvo);
+      const diferenca = Math.abs(calcB - alvo);
       if (diferenca < menorDiferenca) {
         menorDiferenca = diferenca;
         indiceMaisProximo = i - 1;
       }
     }
+  }
+
+  // Segundo passo: Gerar as linhas da tabela
+  for (let i = 1; i <= 109; i++) {
+    const A = i / 100;
+    const calcB = A * bases.B4;
+    const calcC = A * bases.B5;
 
     linhas.push(`
-      <tr ${indiceMaisProximo === i-1 && alvo > 0 ? 'class="highlight"' : ''}>
+      <tr>
         <td class="col-A">${format(A)}</td>
         <td>${format(calcB)}</td>
         <td>${format(calcC)}</td>
@@ -243,9 +248,13 @@ function preencherTabela(bases) {
   }
 
   tbody.innerHTML = linhas.join("");
+
+  // Terceiro passo: Aplicar destaque na linha do alvo (calculado sobre LOSS)
   if (indiceMaisProximo >= 0 && alvo > 0) {
-    tbody.children[indiceMaisProximo].style.color = "#00ff88";
-    tbody.children[indiceMaisProximo].style.fontWeight = "bold";
+    const row = tbody.children[indiceMaisProximo];
+    row.style.color = "#00ff88"; // Laranja vibrante para destaque do LOSS
+    row.style.fontWeight = "bold";
+    row.style.backgroundColor = "rgba(255, 174, 0, 0.1)"; // Fundo sutil
   }
 }
 
@@ -290,4 +299,3 @@ document.getElementById("btnFatiar").onclick = () => {
 
 </body>
 </html>
-
