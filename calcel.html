@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Calculadora XAUUSD - Alvo em LOSS</title>
+<title>Calculadora XAUUSD - Janela de Comparação</title>
 
 <link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
 
@@ -135,6 +135,14 @@ table.grid th { background:#042a30; text-align:center; color:#00f7ff; }
 table.grid td { background:#00090b; text-align:right; }
 .col-A { text-align:center; background:#042a30; font-weight:700; }
 
+/* Estilo para a linha do alvo em LOSS */
+.highlight td {
+  color: #ffae00 !important;
+  font-weight: bold;
+  background: #2a1b00 !important;
+  border: 1px solid #ffae00;
+}
+
 .fatiado-msg {
   font-weight: bold;
   color: #ffd700;
@@ -209,53 +217,54 @@ function format(v) { return Number(v).toFixed(2); }
 function calcularBases(B2) {
   const n = Number(B2);
   if (!isFinite(n) || n === 0) return null;
+  // XAUUSD usa divisor 4 conforme lógica original
   return { B3: n * 2, B4: (n / 4) * 9, B5: (n / 4) * 8 };
 }
 
 function preencherTabela(bases) {
   tbody.innerHTML = "";
   const alvo = Number(inputAlvo.value);
+  
+  if (alvo <= 0) {
+    tbody.innerHTML = "<tr><td colspan='3' style='text-align:center'>Defina um ALVO para exibir a janela de resultados.</td></tr>";
+    return;
+  }
+
   let menorDiferenca = Infinity;
-  let indiceMaisProximo = -1;
-  const linhas = [];
+  let melhorIndice = -1;
 
-  // Primeiro passo: Identificar qual linha tem o LOSS mais próximo do Alvo
-  for (let i = 1; i <= 109; i++) {
+  // 1. Localiza o índice do LOSS mais próximo (até 1000 para margem de segurança)
+  for (let i = 1; i <= 1000; i++) {
     const A = i / 100;
-    const calcB = A * bases.B4; // Coluna U$ LOSS
-
-    if (alvo > 0) {
-      const diferenca = Math.abs(calcB - alvo);
-      if (diferenca < menorDiferenca) {
-        menorDiferenca = diferenca;
-        indiceMaisProximo = i - 1;
-      }
+    const calcB = A * bases.B4; 
+    const diferenca = Math.abs(calcB - alvo);
+    
+    if (diferenca < menorDiferenca) {
+      menorDiferenca = diferenca;
+      melhorIndice = i;
     }
   }
 
-  // Segundo passo: Gerar as linhas da tabela
-  for (let i = 1; i <= 109; i++) {
+  // 2. Cria a janela de comparação (3 acima, Alvo, 3 abaixo)
+  let html = "";
+  const inicio = Math.max(1, melhorIndice - 3);
+  const fim = melhorIndice + 3;
+
+  for (let i = inicio; i <= fim; i++) {
     const A = i / 100;
     const calcB = A * bases.B4;
     const calcC = A * bases.B5;
+    const isTarget = (i === melhorIndice);
 
-    linhas.push(`
-      <tr>
+    html += `
+      <tr class="${isTarget ? 'highlight' : ''}">
         <td class="col-A">${format(A)}</td>
         <td>${format(calcB)}</td>
         <td>${format(calcC)}</td>
-      </tr>`);
+      </tr>`;
   }
 
-  tbody.innerHTML = linhas.join("");
-
-  // Terceiro passo: Aplicar destaque na linha do alvo (calculado sobre LOSS)
-  if (indiceMaisProximo >= 0 && alvo > 0) {
-    const row = tbody.children[indiceMaisProximo];
-    row.style.color = "#ffae00"; // Laranja vibrante para destaque do LOSS
-    row.style.fontWeight = "bold";
-    row.style.backgroundColor = "rgba(255, 174, 0, 0.1)"; // Fundo sutil
-  }
+  tbody.innerHTML = html;
 }
 
 document.getElementById("btnCalc").onclick = () => {
@@ -280,23 +289,22 @@ document.getElementById("btnClear").onclick = () => {
 
 document.getElementById("btnFatiar").onclick = () => {
   const crAtual = Number(inputB2.value);
-  const b3 = Number(document.getElementById("b3").textContent);
-  const b4 = Number(document.getElementById("b4").textContent);
-  const b5 = Number(document.getElementById("b5").textContent);
+  if (!crAtual) return alert("Calcule primeiro!");
 
-  if (!crAtual || !b3) return alert("Calcule primeiro para poder fatiar!");
+  // Ajusta o C.R para a metade e recalcula tudo
+  const novoCR = crAtual / 2;
+  inputB2.value = novoCR;
 
-  const basesFatiadas = { B3: b3 / 2, B4: b4 / 2, B5: b5 / 2 };
+  const basesFatiadas = calcularBases(novoCR);
   
   document.getElementById("b3").textContent = format(basesFatiadas.B3);
   document.getElementById("b4").textContent = format(basesFatiadas.B4);
   document.getElementById("b5").textContent = format(basesFatiadas.B5);
 
   preencherTabela(basesFatiadas);
-  fatiadoMsg.textContent = `>>> Canal fatiado: ${format(crAtual / 2)} pontos`;
+  fatiadoMsg.textContent = `>>> Canal fatiado: ${format(novoCR)} pontos`;
 };
 </script>
 
 </body>
 </html>
-
