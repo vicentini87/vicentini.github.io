@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRADER HUD - CLEAN</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CONFIGURAÇÕES DE CORES */
+        :root {
+            --bg-deep: #000000;
+            --card-bg: #0a0a0a;
+            --neon-gold: #ffcc00;
+            --neon-blue: #00f2ff;
+            --neon-pink: #ff0055;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hud-container {
+            width: 100%;
+            max-width: 500px; /* Otimizado para Mobile */
+        }
+
+        /* CABEÇALHO */
+        header {
+            text-align: center;
+            padding: 15px;
+            border: 1px solid var(--neon-blue);
+            margin-bottom: 20px;
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        #clock {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .subtitle {
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        /* ALERTA CRÍTICO */
+        .alert-bar {
+            background: var(--neon-pink);
+            color: #000;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* CARDS DE ATIVOS */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card.gold { border-left: 4px solid var(--neon-gold); }
+        .card.euro { border-left: 4px solid var(--neon-blue); }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .gold h2 { color: var(--neon-gold); }
+        .euro h2 { color: var(--neon-blue); }
+
+        .tag-15m {
+            font-size: 0.7rem;
+            background: #222;
+            padding: 2px 8px;
+            border-radius: 3px;
+            color: #fff;
+        }
+
+        /* LISTAS */
+        ul {
+            list-style: none;
+        }
+
+        li {
+            font-size: 0.85rem;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1a;
+            color: #ccc;
+        }
+
+        li:last-child { border: none; }
+
+        .important {
+            color: var(--neon-pink);
+            font-weight: bold;
+        }
+
+        /* CONTAS */
+        .accounts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .acc-box {
+            background: #111;
+            padding: 12px;
+            border: 1px solid #333;
+        }
+
+        .acc-box label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+        }
+
+        .acc-box span {
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* FRASES MENTAIS */
+        .mindset {
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid #222;
+        }
+
+        .mindset p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hud-container">
+    <header>
+        <div id="clock">00:00:00</div>
+        <div class="subtitle">SYSTEM TERMINAL v2.0</div>
+    </header>
+
+    <div class="alert-bar">
+        ⚠ AJUSTAR LOTES ANTES DE OPERAR
+    </div>
+
+    <div class="card gold">
+        <h2>XAUUSD <span class="tag-15m">15M</span></h2>
+        <ul>
+            <li>• CONFERIR GRÁFICO</li>
+            <li>• CANAL > 1000 PONTOS: <b style="color:var(--neon-gold)">FATIAR</b></li>
+            <li>• CUIDADO ABERTURA 61.8 FIBONACCI</li>
+            <li class="important">• > 6000 PONTOS: NÃO OPERAR</li>
+        </ul>
+    </div>
+
+    <div class="card euro">
+        <h2>EURUSD <span class="tag-15m">15M</span></h2>
+        <ul>
+            <li>• CONFERIR GRÁFICO</li>
+            <li>• CANAL < 70 PONTOS: ABRIR CR+ZQ</li>
+            <li>• CANAL > 71 PONTOS: <b style="color:var(--neon-blue)">FATIAR</b></li>
+            <li>• CUIDADO ABERTURA 61.8 FIBONACCI</li>
+        </ul>
+    </div>
+
+    <div class="accounts">
+        <div class="acc-box">
+            <label>TICKMILL XAUUSD</label>
+            <span>55768248</span>
+        </div>
+        <div class="acc-box">
+            <label>HANTEC EURUSD</label>
+            <span>50126116</span>
+        </div>
+    </div>
+
+    <div class="mindset">
+        <p>1. Sucesso vem da consistência.</p>
+        <p>2. Disciplina supera talento.</p>
+        <p>3. Controle emocional = Controle de resultados.</p>
+        <p>4. Paciência é vantagem competitiva.</p>
+        <p>5. O foco é não quebrar.</p>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const time = now.getHours().toString().padStart(2, '0') + ":" + 
+                     now.getMinutes().toString().padStart(2, '0') + ":" + 
+                     now.getSeconds().toString().padStart(2, '0');
+        document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+</body>
+</html>
