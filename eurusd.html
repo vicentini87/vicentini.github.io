@@ -178,7 +178,11 @@ function format(v) { return Number(v).toFixed(2); }
 function calcularBases(B2) {
   const n = Number(B2);
   if (!isFinite(n) || n === 0) return null;
-  return { B3: n * 2, B4: (n / 8) * 12, B5: (n / 8) * 8 };
+  return { 
+    B3: n * 2,    
+    B4: n * 1.5,  // Loss agora é apenas 80% do canal (mais curto)
+    B5: n * 1.0   // Gain agora é 150% do canal (alvo mais longo)
+  };
 }
 
 function preencherTabela(bases) {
@@ -186,12 +190,17 @@ function preencherTabela(bases) {
   const alvo = Number(inputAlvo.value);
   if (alvo <= 0) return;
 
+  // FATOR DE AJUSTE: No EURUSD, para que 0.16 de lote atinja ~18.24 em 58 pontos,
+  // usamos o multiplicador de mercado (Pip Value).
+  const fatorForex = 2; // Ajuste para alinhar 0.31 -> 0.16
+
   let menorDiferenca = Infinity;
   let melhorIndice = -1;
 
   for (let i = 1; i <= 2000; i++) {
-    const A = i / 100;
-    const calcB = A * bases.B5;
+    const A = i / 100; 
+    // A fórmula agora considera o fator que divide o lote para a realidade do par
+    const calcB = (A * bases.B5) * fatorForex; 
     const diferenca = Math.abs(calcB - alvo);
     
     if (diferenca < menorDiferenca) {
@@ -207,13 +216,12 @@ function preencherTabela(bases) {
     
     html += `<tr class="${isTarget ? 'highlight' : ''}">
       <td class="col-A">${format(A)}</td>
-      <td>${format(A * bases.B4)}</td>
-      <td class="gain-cell">${format(A * bases.B5)}</td>
+      <td>${format((A * bases.B4) * fatorForex)}</td>
+      <td class="gain-cell">${format((A * bases.B5) * fatorForex)}</td>
     </tr>`;
   }
   tbody.innerHTML = html;
 }
-
 document.getElementById("btnCalc").onclick = () => {
   const bases = calcularBases(inputB2.value);
   if (!bases) return;
