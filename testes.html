@@ -20,7 +20,6 @@
     
     .title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #00f7ff; }
     
-    /* Ajuste de Layout dos Inputs */
     .row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .input-group { display: flex; align-items: center; gap: 10px; flex: 1; }
     .label { font-weight:700; font-size: 14px; }
@@ -28,7 +27,7 @@
     .input-cell { 
         font-family: 'Consolas', 'Courier New', monospace; 
         width: 100%; 
-        text-align: center; /* Centralizado para facilitar leitura */
+        text-align: center; 
         border: 1px solid #00eaff; 
         background: #021014; 
         color: #00eaff; 
@@ -51,15 +50,27 @@
 
     .triple-block { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
     .box { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; }
-    .display { flex-grow: 1; background: #021014; padding: 8px; border: 1px solid #00eaff; text-align: center; font-weight: bold; }
+    
+    /* AJUSTE AQUI: Altura mínima para não sumir quando vazio */
+    .display { 
+        flex-grow: 1; 
+        background: #021014; 
+        padding: 8px; 
+        border: 1px solid #00eaff; 
+        text-align: center; 
+        font-weight: bold; 
+        min-height: 38px; /* Altura de uma linha de texto com padding */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-    /* Tabela Centralizada */
     .table-wrapper { margin-top: 20px; }
     table.grid { border-collapse: collapse; width: 100%; font-size: 13px; }
     table.grid th, table.grid td { 
         border:1px solid #004e55; 
         padding:10px 4px; 
-        text-align: center; /* Centralização solicitada */
+        text-align: center; 
     }
     table.grid th { background:#042a30; }
     table.grid td { background:#00090b; }
@@ -69,14 +80,13 @@
     tr.highlight td.col-A, tr.highlight td.gain-cell { color: #00ff00 !important; text-shadow: 0 0 8px #00ff00; }
     tr.highlight td:nth-child(2) { color: #ff4d4d !important; }
 
-    .fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; font-size: 12px; }
+    .fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; font-size: 12px; min-height: 15px; }
 
-    /* --- RESPONSIVIDADE MOBILE --- */
     @media (max-width: 480px) {
-        .row { flex-direction: column; } /* Alvo em cima, C.R embaixo */
+        .row { flex-direction: column; }
         .input-group { width: 100%; }
-        .row-btns { flex-direction: row !important; } /* Botões continuam lado a lado */
-        .label { min-width: 90px; } /* Alinhamento das labels no mobile */
+        .row-btns { flex-direction: row !important; }
+        .label { min-width: 90px; }
     }
 </style>
 </head>
@@ -88,11 +98,11 @@
     <div class="row">
         <div class="input-group">
             <span class="label">ALVO (GAIN):</span>
-            <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="U$ GAIN" />
+            <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
         </div>
         <div class="input-group">
             <span class="label">C.R:</span>
-            <input id="b2" class="input-cell" type="number" step="0.01" placeholder="Canal" />
+            <input id="b2" class="input-cell" type="number" step="0.01" placeholder="0.00" />
         </div>
     </div>
 
@@ -103,9 +113,9 @@
     </div>
 
     <div class="triple-block">
-        <div class="box"><span class="label">CR+ZN:</span><div id="b3" class="display"></div></div>
-        <div class="box"><span class="label">LOSS:</span><div id="b4" class="display"></div></div>
-        <div class="box"><span class="label">GAIN:</span><div id="b5" class="display"></div></div>
+        <div class="box"><span class="label">CR+ZN:</span><div id="b3" class="display">---</div></div>
+        <div class="box"><span class="label">LOSS:</span><div id="b4" class="display">---</div></div>
+        <div class="box"><span class="label">GAIN:</span><div id="b5" class="display">---</div></div>
     </div>
 
     <div id="fatiadoMsg" class="fatiado-msg"></div>
@@ -125,7 +135,6 @@
 </div>
 
 <script>
-// Mantendo a mesma lógica matemática exata discutida anteriormente
 const inputB2 = document.getElementById("b2");
 const inputAlvo = document.getElementById("alvoManual");
 const tbody = document.querySelector("#resultado tbody");
@@ -174,7 +183,6 @@ function atualizarTudo() {
 
 function copyToClipboard(val) {
     navigator.clipboard.writeText(val);
-    // Feedback visual simples
     const msgOrig = fatiadoMsg.textContent;
     fatiadoMsg.textContent = "Lote " + val + " copiado!";
     fatiadoMsg.style.color = "#00ff00";
@@ -201,11 +209,12 @@ document.getElementById("btnFatiar").onclick = () => {
 document.getElementById("btnClear").onclick = () => {
     inputB2.value = ""; inputAlvo.value = "";
     divisorFatiar = 1;
-    document.querySelectorAll(".display").forEach(d => d.textContent = "");
+    // Reseta para os traços para manter a altura visual
+    document.getElementById("b3").textContent = "---";
+    document.getElementById("b4").textContent = "---";
+    document.getElementById("b5").textContent = "---";
     tbody.innerHTML = ""; fatiadoMsg.textContent = "";
 };
 </script>
 </body>
 </html>
-
-
