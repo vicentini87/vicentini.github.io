@@ -7,76 +7,135 @@
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Consolas', 'Courier New', monospace; background: #0b1114; padding: 15px; color: #00eaff; }
-    .sheet { background: #081c20; padding: 15px; border: 1px solid #00eaff; box-shadow: 0 0 15px rgba(0,234,255,0.35); max-width: 720px; margin: 0 auto; border-radius: 8px; }
+    
+    .sheet { 
+        background: #081c20; 
+        padding: 15px; 
+        border: 1px solid #00eaff; 
+        box-shadow: 0 0 15px rgba(0,234,255,0.35); 
+        max-width: 720px; 
+        margin: 0 auto; 
+        border-radius: 8px; 
+    }
+    
     .title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #00f7ff; }
+    
+    /* Ajuste de Layout dos Inputs */
     .row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .input-group { display: flex; align-items: center; gap: 10px; flex: 1; }
     .label { font-weight:700; font-size: 14px; }
-    .input-cell { font-family: 'Consolas', 'Courier New', monospace; width: 100%; text-align: right; border: 1px solid #00eaff; background: #021014; color: #00eaff; padding: 8px; font-size: 17px; }
-    .small-btn { font-family: 'Consolas', 'Courier New', monospace; padding: 12px 10px; border:1px solid #00eaff; background: #021014; color:#00eaff; cursor:pointer; flex: 1; }
+    
+    .input-cell { 
+        font-family: 'Consolas', 'Courier New', monospace; 
+        width: 100%; 
+        text-align: center; /* Centralizado para facilitar leitura */
+        border: 1px solid #00eaff; 
+        background: #021014; 
+        color: #00eaff; 
+        padding: 10px; 
+        font-size: 17px; 
+    }
+
+    .small-btn { 
+        font-family: 'Consolas', 'Courier New', monospace; 
+        padding: 12px 10px; 
+        border:1px solid #00eaff; 
+        background: #021014; 
+        color:#00eaff; 
+        cursor:pointer; 
+        flex: 1; 
+    }
+    
     .btn-clear { border-color:#ff4d4d; color:#ff4d4d; }
     .btn-fatiar { border-color:#ffd700; color:#ffd700; }
+
     .triple-block { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
     .box { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; }
-    .display { flex-grow: 1; background: #021014; padding: 8px; border: 1px solid #00eaff; text-align: right; font-weight: bold; }
+    .display { flex-grow: 1; background: #021014; padding: 8px; border: 1px solid #00eaff; text-align: center; font-weight: bold; }
+
+    /* Tabela Centralizada */
     .table-wrapper { margin-top: 20px; }
     table.grid { border-collapse: collapse; width: 100%; font-size: 13px; }
-    table.grid th, table.grid td { border:1px solid #004e55; padding:8px 4px; }
+    table.grid th, table.grid td { 
+        border:1px solid #004e55; 
+        padding:10px 4px; 
+        text-align: center; /* Centralização solicitada */
+    }
     table.grid th { background:#042a30; }
-    table.grid td { background:#00090b; text-align:right; }
-    .col-A { background:#042a30; text-align:center; font-weight:700; cursor: pointer; }
+    table.grid td { background:#00090b; }
+    
+    .col-A { background:#042a30; font-weight:700; cursor: pointer; }
     tr.highlight td { background-color: #002b0a !important; font-weight: bold; }
     tr.highlight td.col-A, tr.highlight td.gain-cell { color: #00ff00 !important; text-shadow: 0 0 8px #00ff00; }
     tr.highlight td:nth-child(2) { color: #ff4d4d !important; }
-    .fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; }
+
+    .fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; font-size: 12px; }
+
+    /* --- RESPONSIVIDADE MOBILE --- */
+    @media (max-width: 480px) {
+        .row { flex-direction: column; } /* Alvo em cima, C.R embaixo */
+        .input-group { width: 100%; }
+        .row-btns { flex-direction: row !important; } /* Botões continuam lado a lado */
+        .label { min-width: 90px; } /* Alinhamento das labels no mobile */
+    }
 </style>
 </head>
 <body>
 
 <div class="sheet">
     <div class="title">CALCULADORA EURUSD PRO</div>
+    
     <div class="row">
         <div class="input-group">
             <span class="label">ALVO (GAIN):</span>
-            <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
+            <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="U$ GAIN" />
         </div>
         <div class="input-group">
             <span class="label">C.R:</span>
-            <input id="b2" class="input-cell" type="number" step="0.01" placeholder="0.00" />
+            <input id="b2" class="input-cell" type="number" step="0.01" placeholder="Canal" />
         </div>
     </div>
-    <div class="row">
+
+    <div class="row row-btns">
         <button id="btnCalc" class="small-btn">Calcular</button>
         <button id="btnClear" class="small-btn btn-clear">Limpar</button>
         <button id="btnFatiar" class="small-btn btn-fatiar">Fatiar</button>
     </div>
+
     <div class="triple-block">
         <div class="box"><span class="label">CR+ZN:</span><div id="b3" class="display"></div></div>
         <div class="box"><span class="label">LOSS:</span><div id="b4" class="display"></div></div>
         <div class="box"><span class="label">GAIN:</span><div id="b5" class="display"></div></div>
     </div>
+
     <div id="fatiadoMsg" class="fatiado-msg"></div>
+
     <div class="table-wrapper">
         <table class="grid" id="resultado">
-            <thead><tr><th class="col-A">CONT (Lote)</th><th>U$ LOSS</th><th>U$ GAIN</th></tr></thead>
+            <thead>
+                <tr>
+                    <th class="col-A">CONT (Lote)</th>
+                    <th>U$ LOSS</th>
+                    <th>U$ GAIN</th>
+                </tr>
+            </thead>
             <tbody></tbody>
         </table>
     </div>
 </div>
 
 <script>
+// Mantendo a mesma lógica matemática exata discutida anteriormente
 const inputB2 = document.getElementById("b2");
 const inputAlvo = document.getElementById("alvoManual");
 const tbody = document.querySelector("#resultado tbody");
 const fatiadoMsg = document.getElementById("fatiadoMsg");
 
-// Variável interna para controle do fatiamento sem alterar o INPUT
 let divisorFatiar = 1;
-
 const format = (v) => Number(v).toFixed(2);
 
 function calcularBases(B2_valor) {
-    const n = (Number(B2_valor) / divisorFatiar); // Aplica o fatiamento internamente
+    const n = (Number(B2_valor) / divisorFatiar);
     const fatorMercado = 2; 
     if (!n) return null;
     return {
@@ -115,20 +174,27 @@ function atualizarTudo() {
 
 function copyToClipboard(val) {
     navigator.clipboard.writeText(val);
-    alert("Lote " + val + " copiado!");
+    // Feedback visual simples
+    const msgOrig = fatiadoMsg.textContent;
+    fatiadoMsg.textContent = "Lote " + val + " copiado!";
+    fatiadoMsg.style.color = "#00ff00";
+    setTimeout(() => { 
+        fatiadoMsg.textContent = msgOrig;
+        fatiadoMsg.style.color = "#ffd700";
+    }, 1500);
 }
 
 document.getElementById("btnCalc").onclick = () => {
-    divisorFatiar = 1; // Reseta fatiamento ao clicar em calcular novo CR
+    divisorFatiar = 1;
     fatiadoMsg.textContent = "";
     atualizarTudo();
 };
 
 document.getElementById("btnFatiar").onclick = () => {
     if (!inputB2.value) return;
-    divisorFatiar *= 2; // Dobra o divisor (fatiando o resultado por 2)
+    divisorFatiar *= 2;
     const valorVisualFatiado = Number(inputB2.value) / divisorFatiar;
-    fatiadoMsg.textContent = `>>> Cálculo fatiado internamente: ${format(valorVisualFatiado)} pts`;
+    fatiadoMsg.textContent = `>>> Fatiado: ${format(valorVisualFatiado)} pts`;
     atualizarTudo(); 
 };
 
@@ -141,3 +207,5 @@ document.getElementById("btnClear").onclick = () => {
 </script>
 </body>
 </html>
+
+
