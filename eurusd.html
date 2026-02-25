@@ -4,167 +4,64 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Calculadora EURUSD - Pro</title>
-
-<link rel="icon" type="image/png" href="https://www.uscurrency.gov/themes/usc2021/images/favicons/apple-touch-icon.png">
-
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Consolas', 'Courier New', monospace;
-  background: #0b1114;
-  padding: 15px;
-  color: #00eaff;
-  overflow-x: hidden;
-  width: 100%;
-}
-
-.sheet {
-  background: #081c20;
-  padding: 15px;
-  border: 1px solid #00eaff;
-  box-shadow: 0 0 15px rgba(0,234,255,0.35);
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  border-radius: 8px;
-}
-
-.title { 
-  font-size: 18px; 
-  font-weight: 700; 
-  text-align: center; 
-  margin-bottom: 20px;
-  letter-spacing: 2px;
-  color: #00f7ff;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-}
-
-.label { font-weight:700; font-size: 14px; white-space: nowrap; }
-
-.input-cell {
-  font-family: 'Consolas', 'Courier New', monospace;
-  width: 100%;
-  text-align: right;
-  border: 1px solid #00eaff;
-  background: #021014;
-  color: #00eaff;
-  padding: 8px;
-  font-size: 17px;
-}
-
-.small-btn { 
-  font-family: 'Consolas', 'Courier New', monospace;
-  padding: 12px 10px; 
-  font-size:14px; 
-  border-radius:4px; 
-  border:1px solid #00eaff;
-  background: #021014;
-  color:#00eaff;
-  cursor:pointer;
-  flex: 1 1 auto;
-}
-
-.btn-clear { border-color:#ff4d4d; color:#ff4d4d; }
-.btn-fatiar { border-color:#ffd700; color:#ffd700; }
-
-.triple-block { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-.box { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; }
-.display {
-  font-family: 'Consolas', 'Courier New', monospace;
-  flex-grow: 1;
-  background: #021014;
-  padding: 8px;
-  border: 1px solid #00eaff;
-  text-align: right;
-  color:#00eaff;
-  font-weight: bold;
-}
-
-.table-wrapper { margin-top: 20px; width: 100%; }
-table.grid { border-collapse: collapse; width: 100%; font-size: 13px; color:#00eaff; }
-table.grid th, table.grid td { border:1px solid #004e55; padding:8px 4px; }
-table.grid th { background:#042a30; text-align:center; }
-table.grid td { background:#00090b; text-align:right; }
-
-/* COLUNA A PADRÃO */
-.col-A { background:#042a30; text-align:center; font-weight:700; }
-
-/* --- AJUSTE DO FUNDO VERDE ESCURO NEON --- */
-table.grid tr.highlight td {
-  /* Um verde muito escuro e saturado para efeito neon */
-  background-color: #002b0a !important; 
-  font-weight: bold;
-  color: #ff0000; /* U$ LOSS em Vermelho */
-}
-
-/* Forçamos o verde neon brilhante apenas no CONT e no GAIN */
-table.grid tr.highlight td.col-A,
-table.grid tr.highlight td.gain-cell {
-  color: #00ff00 !important;
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
-}
-
-.fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; }
-
-@media (max-width: 480px) {
-  .row { flex-direction: column; align-items: stretch; gap: 12px; }
-  .input-group { width: 100%; }
-  .row-btns { flex-direction: row !important; display: flex; gap: 5px; }
-  .box { justify-content: space-between; width: 100%; }
-  .display { width: 60%; flex-grow: 0; }
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Consolas', 'Courier New', monospace; background: #0b1114; padding: 15px; color: #00eaff; }
+    .sheet { background: #081c20; padding: 15px; border: 1px solid #00eaff; box-shadow: 0 0 15px rgba(0,234,255,0.35); max-width: 720px; margin: 0 auto; border-radius: 8px; }
+    .title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #00f7ff; }
+    .row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .input-group { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .label { font-weight:700; font-size: 14px; }
+    .input-cell { font-family: 'Consolas', 'Courier New', monospace; width: 100%; text-align: right; border: 1px solid #00eaff; background: #021014; color: #00eaff; padding: 8px; font-size: 17px; }
+    .small-btn { font-family: 'Consolas', 'Courier New', monospace; padding: 12px 10px; border:1px solid #00eaff; background: #021014; color:#00eaff; cursor:pointer; flex: 1; }
+    .btn-clear { border-color:#ff4d4d; color:#ff4d4d; }
+    .btn-fatiar { border-color:#ffd700; color:#ffd700; }
+    .triple-block { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .box { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; }
+    .display { flex-grow: 1; background: #021014; padding: 8px; border: 1px solid #00eaff; text-align: right; font-weight: bold; }
+    .table-wrapper { margin-top: 20px; }
+    table.grid { border-collapse: collapse; width: 100%; font-size: 13px; }
+    table.grid th, table.grid td { border:1px solid #004e55; padding:8px 4px; }
+    table.grid th { background:#042a30; }
+    table.grid td { background:#00090b; text-align:right; }
+    .col-A { background:#042a30; text-align:center; font-weight:700; cursor: pointer; }
+    tr.highlight td { background-color: #002b0a !important; font-weight: bold; }
+    tr.highlight td.col-A, tr.highlight td.gain-cell { color: #00ff00 !important; text-shadow: 0 0 8px #00ff00; }
+    tr.highlight td:nth-child(2) { color: #ff4d4d !important; }
+    .fatiado-msg { font-weight: bold; color: #ffd700; margin-top: 15px; text-align: center; }
 </style>
 </head>
 <body>
 
 <div class="sheet">
-  <div class="title">CALCULADORA EURUSD</div>
-
-  <div class="row">
-    <div class="input-group">
-      <span class="label">ALVO (GAIN):</span>
-      <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
+    <div class="title">CALCULADORA EURUSD PRO</div>
+    <div class="row">
+        <div class="input-group">
+            <span class="label">ALVO (GAIN):</span>
+            <input id="alvoManual" class="input-cell" type="number" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="input-group">
+            <span class="label">C.R:</span>
+            <input id="b2" class="input-cell" type="number" step="0.01" placeholder="0.00" />
+        </div>
     </div>
-    <div class="input-group">
-      <span class="label">C.R:</span>
-      <input id="b2" class="input-cell" type="number" step="0.01" placeholder="100" />
+    <div class="row">
+        <button id="btnCalc" class="small-btn">Calcular</button>
+        <button id="btnClear" class="small-btn btn-clear">Limpar</button>
+        <button id="btnFatiar" class="small-btn btn-fatiar">Fatiar</button>
     </div>
-  </div>
-  
-  <div class="row row-btns">
-    <button id="btnCalc" class="small-btn">Calcular</button>
-    <button id="btnClear" class="small-btn btn-clear">Limpar</button>
-    <button id="btnFatiar" class="small-btn btn-fatiar">Fatiar</button>
-  </div>
-
-  <div class="triple-block">
-    <div class="box"><span class="label">CR+ZN:</span><div id="b3" class="display"></div></div>
-    <div class="box"><span class="label">LOSS:</span><div id="b4" class="display"></div></div>
-    <div class="box"><span class="label">GAIN:</span><div id="b5" class="display"></div></div>
-  </div>
-
-  <div id="fatiadoMsg" class="fatiado-msg"></div>
-
-  <div class="table-wrapper">
-    <table class="grid" id="resultado">
-      <thead><tr><th class="col-A">CONT</th><th>U$ LOSS</th><th>U$ GAIN</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <div class="triple-block">
+        <div class="box"><span class="label">CR+ZN:</span><div id="b3" class="display"></div></div>
+        <div class="box"><span class="label">LOSS:</span><div id="b4" class="display"></div></div>
+        <div class="box"><span class="label">GAIN:</span><div id="b5" class="display"></div></div>
+    </div>
+    <div id="fatiadoMsg" class="fatiado-msg"></div>
+    <div class="table-wrapper">
+        <table class="grid" id="resultado">
+            <thead><tr><th class="col-A">CONT (Lote)</th><th>U$ LOSS</th><th>U$ GAIN</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -173,83 +70,73 @@ const inputAlvo = document.getElementById("alvoManual");
 const tbody = document.querySelector("#resultado tbody");
 const fatiadoMsg = document.getElementById("fatiadoMsg");
 
-function format(v) { return Number(v).toFixed(2); }
+// Variável interna para controle do fatiamento sem alterar o INPUT
+let divisorFatiar = 1;
 
-function calcularBases(B2) {
-  const n = Number(B2);
-  if (!isFinite(n) || n === 0) return null;
-  return { 
-    B3: n * 2,    
-    B4: n * 1.5,  // Loss agora é apenas 80% do canal (mais curto)
-    B5: n * 1.0   // Gain agora é 150% do canal (alvo mais longo)
-  };
+const format = (v) => Number(v).toFixed(2);
+
+function calcularBases(B2_valor) {
+    const n = (Number(B2_valor) / divisorFatiar); // Aplica o fatiamento internamente
+    const fatorMercado = 2; 
+    if (!n) return null;
+    return {
+        B3: n * 2,                
+        B4: (n * 1.5) * fatorMercado, 
+        B5: n * fatorMercado,         
+        puro: n                       
+    };
 }
 
-function preencherTabela(bases) {
-  tbody.innerHTML = "";
-  const alvo = Number(inputAlvo.value);
-  if (alvo <= 0) return;
+function atualizarTudo() {
+    const bases = calcularBases(inputB2.value);
+    if (!bases) return;
 
-  // FATOR DE AJUSTE: No EURUSD, para que 0.16 de lote atinja ~18.24 em 58 pontos,
-  // usamos o multiplicador de mercado (Pip Value).
-  const fatorForex = 2; // Ajuste para alinhar 0.31 -> 0.16
+    document.getElementById("b3").textContent = format(bases.puro * 2);
+    document.getElementById("b4").textContent = format(bases.B4);
+    document.getElementById("b5").textContent = format(bases.B5);
 
-  let menorDiferenca = Infinity;
-  let melhorIndice = -1;
+    const alvoFin = Number(inputAlvo.value);
+    if (alvoFin <= 0) return;
 
-  for (let i = 1; i <= 2000; i++) {
-    const A = i / 100; 
-    // A fórmula agora considera o fator que divide o lote para a realidade do par
-    const calcB = (A * bases.B5) * fatorForex; 
-    const diferenca = Math.abs(calcB - alvo);
+    const loteIdeal = alvoFin / bases.B5;
     
-    if (diferenca < menorDiferenca) {
-      menorDiferenca = diferenca;
-      melhorIndice = i;
+    let html = "";
+    for (let i = -3; i <= 3; i++) {
+        const A = Math.max(0.01, loteIdeal + (i * 0.01));
+        const isTarget = (i === 0);
+        html += `<tr class="${isTarget ? 'highlight' : ''}">
+            <td class="col-A" onclick="copyToClipboard('${A.toFixed(2)}')">${A.toFixed(2)}</td>
+            <td>${format(A * bases.B4)}</td>
+            <td class="gain-cell">${format(A * bases.B5)}</td>
+        </tr>`;
     }
-  }
-
-  let html = "";
-  for (let i = Math.max(1, melhorIndice - 3); i <= melhorIndice + 3; i++) {
-    const A = i / 100;
-    const isTarget = (i === melhorIndice);
-    
-    html += `<tr class="${isTarget ? 'highlight' : ''}">
-      <td class="col-A">${format(A)}</td>
-      <td>${format((A * bases.B4) * fatorForex)}</td>
-      <td class="gain-cell">${format((A * bases.B5) * fatorForex)}</td>
-    </tr>`;
-  }
-  tbody.innerHTML = html;
+    tbody.innerHTML = html;
 }
+
+function copyToClipboard(val) {
+    navigator.clipboard.writeText(val);
+    alert("Lote " + val + " copiado!");
+}
+
 document.getElementById("btnCalc").onclick = () => {
-  const bases = calcularBases(inputB2.value);
-  if (!bases) return;
-  document.getElementById("b3").textContent = format(bases.B3);
-  document.getElementById("b4").textContent = format(bases.B4);
-  document.getElementById("b5").textContent = format(bases.B5);
-  preencherTabela(bases);
+    divisorFatiar = 1; // Reseta fatiamento ao clicar em calcular novo CR
+    fatiadoMsg.textContent = "";
+    atualizarTudo();
 };
 
 document.getElementById("btnFatiar").onclick = () => {
-  const valorInput = Number(inputB2.value);
-  if (!valorInput) return;
-  
-  const novoCR = valorInput / 2;
-  inputB2.value = novoCR;
-  const bases = calcularBases(novoCR);
-  
-  document.getElementById("b3").textContent = format(bases.B3);
-  document.getElementById("b4").textContent = format(bases.B4);
-  document.getElementById("b5").textContent = format(bases.B5);
-  preencherTabela(bases);
-  fatiadoMsg.textContent = `>>> Canal fatiado: ${format(novoCR)} pontos`;
+    if (!inputB2.value) return;
+    divisorFatiar *= 2; // Dobra o divisor (fatiando o resultado por 2)
+    const valorVisualFatiado = Number(inputB2.value) / divisorFatiar;
+    fatiadoMsg.textContent = `>>> Cálculo fatiado internamente: ${format(valorVisualFatiado)} pts`;
+    atualizarTudo(); 
 };
 
 document.getElementById("btnClear").onclick = () => {
-  inputB2.value = ""; inputAlvo.value = "";
-  document.querySelectorAll(".display").forEach(d => d.textContent = "");
-  tbody.innerHTML = ""; fatiadoMsg.textContent = "";
+    inputB2.value = ""; inputAlvo.value = "";
+    divisorFatiar = 1;
+    document.querySelectorAll(".display").forEach(d => d.textContent = "");
+    tbody.innerHTML = ""; fatiadoMsg.textContent = "";
 };
 </script>
 </body>
